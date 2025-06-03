@@ -3,6 +3,7 @@
 Long-term test generator for qryn endpoints.
 It sends 
 - 3000 logs/sec
+- 4000 plain-text lines / sec
 - 3000 influx logs / sec
 - 300 zipkin traces/sec
 - 300 datadog traces/sec with variable amount of spans
