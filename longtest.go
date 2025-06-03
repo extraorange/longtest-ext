@@ -49,6 +49,18 @@ func writeTest() {
 			})
 			sender.Run()
 		}
+		if strings.Contains(os.Getenv("MODE"), "J") {
+			fmt.Println("Run plain-text test")
+			sender := NewPlainTextSender(LogSenderOpts{
+				ID:         "plaintext",
+				Containers: names,
+				Lines:      logs,
+				LinesPS:    4000,
+				URL:        os.Getenv("URL"),
+				Headers:    headers,
+			})
+			sender.Run()
+		}
 		if strings.Contains(os.Getenv("MODE"), "W") {
 			fmt.Println("Run websocket test")
 			sender := NewWsTest(LogSenderOpts{
