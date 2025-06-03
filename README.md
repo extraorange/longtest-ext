@@ -19,6 +19,7 @@ depending on the MODE until you stop it.
 ## MODE LIST
 
 - L - for loki logs
+- J - for plain-text POSTing
 - M - for metrics remote-write
 - Z - for zipkin traces
 - D - for datadog traces
