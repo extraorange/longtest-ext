@@ -166,15 +166,10 @@ func (l *GenericSender) send(request IRequest) error {
 					return
 				}
 			}
-
-			// general headers parsing
-			if contentType, isSet := l.Headers["Content-Type"]; !isSet || contentType == "" {
-				req.Header.Set("Content-Type", "application/json")
-			}
+			req.Header.Set("Content-Type", "application/json")
 			for k, v := range l.Headers {
 				req.Header.Set(k, v)
 			}
-
 			client := http.Client{
 				Timeout: 30 * time.Second,
 			}
