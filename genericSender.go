@@ -168,7 +168,7 @@ func (l *GenericSender) send(request IRequest) error {
 			}
 
 			// general headers parsing
-			if contentType, isSet := l.Headers["Content-Type"]; isSet || contentType == "" {
+			if contentType, isSet := l.Headers["Content-Type"]; !isSet || contentType == "" {
 				req.Header.Set("Content-Type", "application/json")
 			}
 			for k, v := range l.Headers {
