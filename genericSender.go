@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/client_golang/prometheus/promauto"
 	"io"
 	"math/rand"
 	"net/http"
 	"sync"
 	"time"
+
+	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
 const (
@@ -165,10 +166,15 @@ func (l *GenericSender) send(request IRequest) error {
 					return
 				}
 			}
-			req.Header.Set("Content-Type", "application/json")
+
+			// general headers parsing
+			if contentType, isSet := l.Headers["Content-Type"]; isSet || contentType == "" {
+				req.Header.Set("Content-Type", "application/json")
+			}
 			for k, v := range l.Headers {
 				req.Header.Set(k, v)
 			}
+
 			client := http.Client{
 				Timeout: 30 * time.Second,
 			}
