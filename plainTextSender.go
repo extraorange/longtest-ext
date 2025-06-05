@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"sync"
 	"time"
 )
 
@@ -19,14 +20,15 @@ func (r *PlainTextRequest) Size() int {
 
 func NewPlainTextSender(opts LogSenderOpts) *GenericSender {
 	headers := make(map[string]string, len(opts.Headers)+1)
-	for k, v := range opts.Headers {
-		headers[k] = v
+	if opts.Headers != nil {
+		for k, v := range opts.Headers {
+			headers[k] = v
+		}
 	}
 	headers["Content-Type"] = "text/plain"
-	lines := opts.Lines
 	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	return &GenericSender{
+	sender := &GenericSender{
 		LogSenderOpts: LogSenderOpts{
 			ID:         opts.ID,
 			Containers: opts.Containers,
@@ -40,9 +42,12 @@ func NewPlainTextSender(opts LogSenderOpts) *GenericSender {
 		timeout:    time.Second,
 		numOfSends: opts.LinesPS,
 		rnd:        rnd,
-		generate: func() IRequest {
-			line := lines[rnd.Intn(len(lines))]
-			return &PlainTextRequest{Line: line}
-		},
+		mtx:        sync.Mutex{},
 	}
+	sender.generate = func() IRequest {
+		line := sender.pickRandom(sender.Lines)
+		return &PlainTextRequest{Line: line}
+	}
+
+	return sender
 }
